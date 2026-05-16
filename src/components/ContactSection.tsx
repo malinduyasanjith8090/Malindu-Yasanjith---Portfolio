@@ -1,20 +1,67 @@
 import { motion } from 'motion/react';
 import { Send, Phone, MapPin, Mail, Github, Linkedin } from 'lucide-react';
+import { useState } from 'react';
+import emailjs from '@emailjs/browser';
 
 export default function ContactSection() {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    message: '',
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState({ type: '', message: '' });
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitStatus({ type: '', message: '' });
+
+    // EmailJS configuration
+    // You need to replace these with your own credentials from https://www.emailjs.com/
+    const serviceId = 'YOUR_SERVICE_ID';     // e.g., 'service_abc123'
+    const templateId = 'YOUR_TEMPLATE_ID';   // e.g., 'template_xyz789'
+    const publicKey = 'YOUR_PUBLIC_KEY';     // e.g., 'user_abc123'
+
+    const templateParams = {
+      from_name: formData.name,
+      from_email: formData.email,
+      message: formData.message,
+      to_email: 'yasanjithmalindu@gmail.com',
+    };
+
+    try {
+      await emailjs.send(serviceId, templateId, templateParams, publicKey);
+      setSubmitStatus({ type: 'success', message: 'Message sent successfully! I will get back to you soon.' });
+      setFormData({ name: '', email: '', message: '' }); // reset form
+    } catch (error) {
+      console.error('EmailJS error:', error);
+      setSubmitStatus({ type: 'error', message: 'Failed to send message. Please try again later or email me directly.' });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
-    <section className="h-screen w-full flex items-center justify-center p-8 md:p-16 lg:p-24 snap-start relative z-10">
-      <div className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+    <section 
+      id="contact"
+      className="w-full min-h-screen flex items-center justify-center py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 lg:px-16 xl:px-24 snap-start relative z-10"
+    >
+      <div className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-16 items-center">
         
         {/* Left: Contact Info */}
-        <div className="flex flex-col">
+        <div className="flex flex-col text-center lg:text-left">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="inline-block px-4 py-1.5 rounded-full bg-brand-peach/30 w-max mb-6"
+            className="inline-block px-3 sm:px-4 py-1 rounded-full bg-brand-peach/30 w-max mb-5 sm:mb-6 mx-auto lg:mx-0"
           >
-            <span className="text-sm font-medium tracking-wide text-rose-500 uppercase">
+            <span className="text-xs sm:text-sm font-medium tracking-wide text-rose-500 uppercase">
               Get In Touch
             </span>
           </motion.div>
@@ -24,7 +71,7 @@ export default function ContactSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-slate-900 mb-6"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-bold text-slate-900 mb-4 sm:mb-6"
           >
             Let's create something <span className="text-brand-blue">remarkable</span> together.
           </motion.h2>
@@ -34,25 +81,27 @@ export default function ContactSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="text-lg text-slate-600 mb-10 leading-relaxed max-w-md"
+            className="text-base sm:text-lg text-slate-600 mb-8 sm:mb-10 leading-relaxed max-w-md mx-auto lg:mx-0"
           >
             Always open to discussing new projects, creative ideas, or opportunities to be part of your visions.
           </motion.p>
 
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-5 sm:gap-6">
             <motion.div 
                initial={{ opacity: 0, x: -20 }}
                whileInView={{ opacity: 1, x: 0 }}
                viewport={{ once: true }}
                transition={{ delay: 0.3 }}
-               className="flex items-center gap-4 group"
+               className="flex items-center gap-3 sm:gap-4 group justify-center lg:justify-start"
             >
-              <div className="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center text-brand-blue group-hover:scale-110 group-hover:bg-brand-blue group-hover:text-white transition-all">
-                <Mail size={20} />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-white shadow-sm flex items-center justify-center text-brand-blue group-hover:scale-110 group-hover:bg-brand-blue group-hover:text-white transition-all">
+                <Mail size={16} className="sm:w-5 sm:h-5" />
               </div>
-              <div>
-                <p className="text-sm text-slate-400 font-medium">Email Me At</p>
-                <a href="mailto:yasanjithmalindu@gmail.com" className="text-lg font-medium text-slate-800">yasanjithmalindu@gmail.com</a>
+              <div className="text-left">
+                <p className="text-xs sm:text-sm text-slate-400 font-medium">Email Me At</p>
+                <a href="mailto:yasanjithmalindu@gmail.com" className="text-sm sm:text-base md:text-lg font-medium text-slate-800 break-all">
+                  yasanjithmalindu@gmail.com
+                </a>
               </div>
             </motion.div>
 
@@ -61,14 +110,14 @@ export default function ContactSection() {
                whileInView={{ opacity: 1, x: 0 }}
                viewport={{ once: true }}
                transition={{ delay: 0.4 }}
-               className="flex items-center gap-4 group"
+               className="flex items-center gap-3 sm:gap-4 group justify-center lg:justify-start"
             >
-              <div className="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center text-brand-lavender group-hover:scale-110 group-hover:bg-brand-lavender group-hover:text-white transition-all">
-                <Phone size={20} />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-white shadow-sm flex items-center justify-center text-brand-lavender group-hover:scale-110 group-hover:bg-brand-lavender group-hover:text-white transition-all">
+                <Phone size={16} className="sm:w-5 sm:h-5" />
               </div>
               <div>
-                <p className="text-sm text-slate-400 font-medium">Call Me At</p>
-                <p className="text-lg font-medium text-slate-800">0757196218</p>
+                <p className="text-xs sm:text-sm text-slate-400 font-medium">Call Me At</p>
+                <p className="text-sm sm:text-base md:text-lg font-medium text-slate-800">0757196218</p>
               </div>
             </motion.div>
 
@@ -77,14 +126,14 @@ export default function ContactSection() {
                whileInView={{ opacity: 1, x: 0 }}
                viewport={{ once: true }}
                transition={{ delay: 0.5 }}
-               className="flex items-center gap-4 group"
+               className="flex items-center gap-3 sm:gap-4 group justify-center lg:justify-start"
             >
-              <div className="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center text-brand-peach group-hover:scale-110 group-hover:bg-brand-peach group-hover:text-white transition-all">
-                <MapPin size={20} />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-white shadow-sm flex items-center justify-center text-brand-peach group-hover:scale-110 group-hover:bg-brand-peach group-hover:text-white transition-all">
+                <MapPin size={16} className="sm:w-5 sm:h-5" />
               </div>
-              <div>
-                <p className="text-sm text-slate-400 font-medium">Location</p>
-                <p className="text-lg font-medium text-slate-800">173/1/C Aramaya Road, Makola</p>
+              <div className="text-left">
+                <p className="text-xs sm:text-sm text-slate-400 font-medium">Location</p>
+                <p className="text-sm sm:text-base md:text-lg font-medium text-slate-800">173/1/C Aramaya Road, Makola</p>
               </div>
             </motion.div>
           </div>
@@ -94,13 +143,13 @@ export default function ContactSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.6 }}
-            className="flex gap-4 mt-10 print:hidden"
+            className="flex gap-4 mt-8 sm:mt-10 print:hidden justify-center lg:justify-start"
           >
-            <a href="#" className="w-10 h-10 rounded-full glass flex items-center justify-center text-slate-600 hover:text-brand-blue hover:-translate-y-1 transition-all">
-              <Github size={18} />
+            <a href="https://github.com/malinduyasanjith8090" target="_blank" rel="noopener noreferrer" className="w-8 h-8 sm:w-10 sm:h-10 rounded-full glass flex items-center justify-center text-slate-600 hover:text-brand-blue hover:-translate-y-1 transition-all">
+              <Github size={14} className="sm:w-[18px] sm:h-[18px]" />
             </a>
-            <a href="#" className="w-10 h-10 rounded-full glass flex items-center justify-center text-slate-600 hover:text-brand-blue hover:-translate-y-1 transition-all">
-              <Linkedin size={18} />
+            <a href="#" target="_blank" rel="noopener noreferrer" className="w-8 h-8 sm:w-10 sm:h-10 rounded-full glass flex items-center justify-center text-slate-600 hover:text-brand-blue hover:-translate-y-1 transition-all">
+              <Linkedin size={14} className="sm:w-[18px] sm:h-[18px]" />
             </a>
           </motion.div>
         </div>
@@ -111,38 +160,64 @@ export default function ContactSection() {
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="glass-card p-8 md:p-10 rounded-[32px] print:hidden"
+          className="glass-card p-5 sm:p-6 md:p-8 lg:p-10 rounded-2xl sm:rounded-[32px] print:hidden"
         >
-          <form className="flex flex-col gap-6" onSubmit={(e) => e.preventDefault()}>
-            <div className="flex flex-col gap-2">
-              <label className="text-sm font-medium text-slate-600 px-1">Your Name</label>
+          <form className="flex flex-col gap-4 sm:gap-5 md:gap-6" onSubmit={handleSubmit}>
+            <div className="flex flex-col gap-1.5 sm:gap-2">
+              <label className="text-xs sm:text-sm font-medium text-slate-600 px-1">Your Name</label>
               <input 
                 type="text" 
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                required
                 placeholder="John Doe" 
-                className="w-full px-5 py-4 rounded-2xl bg-white/50 border border-white focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 outline-none transition-all shadow-sm font-medium placeholder:text-slate-400"
+                className="w-full px-4 sm:px-5 py-3 sm:py-4 rounded-xl sm:rounded-2xl bg-white/50 border border-white focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 outline-none transition-all shadow-sm font-medium text-sm sm:text-base placeholder:text-slate-400"
               />
             </div>
             
-            <div className="flex flex-col gap-2">
-              <label className="text-sm font-medium text-slate-600 px-1">Email Address</label>
+            <div className="flex flex-col gap-1.5 sm:gap-2">
+              <label className="text-xs sm:text-sm font-medium text-slate-600 px-1">Email Address</label>
               <input 
                 type="email" 
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
                 placeholder="john@example.com" 
-                className="w-full px-5 py-4 rounded-2xl bg-white/50 border border-white focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 outline-none transition-all shadow-sm font-medium placeholder:text-slate-400"
+                className="w-full px-4 sm:px-5 py-3 sm:py-4 rounded-xl sm:rounded-2xl bg-white/50 border border-white focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 outline-none transition-all shadow-sm font-medium text-sm sm:text-base placeholder:text-slate-400"
               />
             </div>
 
-            <div className="flex flex-col gap-2">
-              <label className="text-sm font-medium text-slate-600 px-1">Message</label>
+            <div className="flex flex-col gap-1.5 sm:gap-2">
+              <label className="text-xs sm:text-sm font-medium text-slate-600 px-1">Message</label>
               <textarea 
+                name="message"
+                value={formData.message}
+                onChange={handleChange}
+                required
                 placeholder="Tell me about your project..." 
                 rows={4}
-                className="w-full px-5 py-4 rounded-2xl bg-white/50 border border-white focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 outline-none transition-all shadow-sm font-medium resize-none placeholder:text-slate-400"
+                className="w-full px-4 sm:px-5 py-3 sm:py-4 rounded-xl sm:rounded-2xl bg-white/50 border border-white focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 outline-none transition-all shadow-sm font-medium text-sm sm:text-base resize-none placeholder:text-slate-400"
               ></textarea>
             </div>
 
-            <button className="w-full mt-2 bg-slate-900 hover:bg-slate-800 text-white font-medium py-4 rounded-2xl flex items-center justify-center gap-2 transition-colors shadow-lg shadow-brand-blue/10">
-              Send Message <Send size={18} />
+            {submitStatus.message && (
+              <div className={`text-sm text-center p-2 rounded-lg ${submitStatus.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                {submitStatus.message}
+              </div>
+            )}
+
+            <button 
+              type="submit" 
+              disabled={isSubmitting}
+              className="w-full mt-2 bg-slate-900 hover:bg-slate-800 text-white font-medium py-3 sm:py-4 rounded-xl sm:rounded-2xl flex items-center justify-center gap-2 transition-colors shadow-lg shadow-brand-blue/10 text-sm sm:text-base disabled:opacity-70 disabled:cursor-not-allowed"
+            >
+              {isSubmitting ? (
+                <>Sending... <Send size={14} className="sm:w-[18px] sm:h-[18px] animate-pulse" /></>
+              ) : (
+                <>Send Message <Send size={14} className="sm:w-[18px] sm:h-[18px]" /></>
+              )}
             </button>
           </form>
         </motion.div>
