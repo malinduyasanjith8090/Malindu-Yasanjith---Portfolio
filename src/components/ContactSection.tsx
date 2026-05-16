@@ -1,64 +1,7 @@
 import { motion } from 'motion/react';
-import { Send, Phone, MapPin, Mail, Github, Linkedin, CheckCircle, AlertCircle } from 'lucide-react';
-import { useState } from 'react';
-import emailjs from '@emailjs/browser';
+import { Send, Phone, MapPin, Mail, Github, Linkedin } from 'lucide-react';
 
 export default function ContactSection() {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: ''
-  });
-  const [isLoading, setIsLoading] = useState(false);
-  const [status, setStatus] = useState({ type: '', message: '' }); // 'success', 'error', ''
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-    // Clear status when user starts typing again
-    if (status.message) setStatus({ type: '', message: '' });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    // Basic validation
-    if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) {
-      setStatus({ type: 'error', message: 'Please fill in all fields.' });
-      return;
-    }
-    if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      setStatus({ type: 'error', message: 'Please enter a valid email address.' });
-      return;
-    }
-
-    setIsLoading(true);
-    setStatus({ type: '', message: '' });
-
-    // EmailJS configuration - REPLACE WITH YOUR OWN KEYS
-    const serviceID = 'service_xylp3qt';      // e.g., 'service_xxxxx'
-    const templateID = 'YOUR_TEMPLATE_ID';    // e.g., 'template_xxxxx'
-    const publicKey = 'YOUR_PUBLIC_KEY';      // from EmailJS dashboard
-
-    try {
-      const templateParams = {
-        from_name: formData.name,
-        from_email: formData.email,
-        message: formData.message,
-        to_email: 'yasanjithmalindu@gmail.com'
-      };
-
-      await emailjs.send(serviceID, templateID, templateParams, publicKey);
-      
-      setStatus({ type: 'success', message: 'Message sent successfully! I\'ll get back to you soon.' });
-      setFormData({ name: '', email: '', message: '' }); // reset form
-    } catch (error) {
-      console.error('EmailJS error:', error);
-      setStatus({ type: 'error', message: 'Something went wrong. Please try again later.' });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   return (
     <section 
       id="contact"
@@ -158,10 +101,10 @@ export default function ContactSection() {
             transition={{ delay: 0.6 }}
             className="flex gap-4 mt-8 sm:mt-10 print:hidden justify-center lg:justify-start"
           >
-            <a href="https://github.com/malinduyasanjith8090" target="_blank" rel="noreferrer" className="w-8 h-8 sm:w-10 sm:h-10 rounded-full glass flex items-center justify-center text-slate-600 hover:text-brand-blue hover:-translate-y-1 transition-all">
+            <a href="#" className="w-8 h-8 sm:w-10 sm:h-10 rounded-full glass flex items-center justify-center text-slate-600 hover:text-brand-blue hover:-translate-y-1 transition-all">
               <Github size={14} className="sm:w-[18px] sm:h-[18px]" />
             </a>
-            <a href="#" target="_blank" rel="noreferrer" className="w-8 h-8 sm:w-10 sm:h-10 rounded-full glass flex items-center justify-center text-slate-600 hover:text-brand-blue hover:-translate-y-1 transition-all">
+            <a href="#" className="w-8 h-8 sm:w-10 sm:h-10 rounded-full glass flex items-center justify-center text-slate-600 hover:text-brand-blue hover:-translate-y-1 transition-all">
               <Linkedin size={14} className="sm:w-[18px] sm:h-[18px]" />
             </a>
           </motion.div>
@@ -175,17 +118,13 @@ export default function ContactSection() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="glass-card p-5 sm:p-6 md:p-8 lg:p-10 rounded-2xl sm:rounded-[32px] print:hidden"
         >
-          <form className="flex flex-col gap-4 sm:gap-5 md:gap-6" onSubmit={handleSubmit}>
+          <form className="flex flex-col gap-4 sm:gap-5 md:gap-6" onSubmit={(e) => e.preventDefault()}>
             <div className="flex flex-col gap-1.5 sm:gap-2">
               <label className="text-xs sm:text-sm font-medium text-slate-600 px-1">Your Name</label>
               <input 
                 type="text" 
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
                 placeholder="John Doe" 
                 className="w-full px-4 sm:px-5 py-3 sm:py-4 rounded-xl sm:rounded-2xl bg-white/50 border border-white focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 outline-none transition-all shadow-sm font-medium text-sm sm:text-base placeholder:text-slate-400"
-                disabled={isLoading}
               />
             </div>
             
@@ -193,48 +132,22 @@ export default function ContactSection() {
               <label className="text-xs sm:text-sm font-medium text-slate-600 px-1">Email Address</label>
               <input 
                 type="email" 
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
                 placeholder="john@example.com" 
                 className="w-full px-4 sm:px-5 py-3 sm:py-4 rounded-xl sm:rounded-2xl bg-white/50 border border-white focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 outline-none transition-all shadow-sm font-medium text-sm sm:text-base placeholder:text-slate-400"
-                disabled={isLoading}
               />
             </div>
 
             <div className="flex flex-col gap-1.5 sm:gap-2">
               <label className="text-xs sm:text-sm font-medium text-slate-600 px-1">Message</label>
               <textarea 
-                name="message"
-                value={formData.message}
-                onChange={handleChange}
                 placeholder="Tell me about your project..." 
                 rows={4}
                 className="w-full px-4 sm:px-5 py-3 sm:py-4 rounded-xl sm:rounded-2xl bg-white/50 border border-white focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 outline-none transition-all shadow-sm font-medium text-sm sm:text-base resize-none placeholder:text-slate-400"
-                disabled={isLoading}
               ></textarea>
             </div>
 
-            {/* Status Message */}
-            {status.message && (
-              <div className={`flex items-center gap-2 text-sm p-3 rounded-xl ${
-                status.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
-              }`}>
-                {status.type === 'success' ? <CheckCircle size={16} /> : <AlertCircle size={16} />}
-                <span>{status.message}</span>
-              </div>
-            )}
-
-            <button 
-              type="submit"
-              disabled={isLoading}
-              className="w-full mt-2 bg-slate-900 hover:bg-slate-800 text-white font-medium py-3 sm:py-4 rounded-xl sm:rounded-2xl flex items-center justify-center gap-2 transition-colors shadow-lg shadow-brand-blue/10 text-sm sm:text-base disabled:opacity-70 disabled:cursor-not-allowed"
-            >
-              {isLoading ? (
-                <>Sending <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div></>
-              ) : (
-                <>Send Message <Send size={14} className="sm:w-[18px] sm:h-[18px]" /></>
-              )}
+            <button className="w-full mt-2 bg-slate-900 hover:bg-slate-800 text-white font-medium py-3 sm:py-4 rounded-xl sm:rounded-2xl flex items-center justify-center gap-2 transition-colors shadow-lg shadow-brand-blue/10 text-sm sm:text-base">
+              Send Message <Send size={14} className="sm:w-[18px] sm:h-[18px]" />
             </button>
           </form>
         </motion.div>
