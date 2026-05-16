@@ -91,7 +91,7 @@ export default function HeroSection() {
           >
             <div className="relative w-full h-full rounded-[32px] overflow-hidden">
               <img 
-                src="../images/portfolio.jpg" 
+                src="https://media.licdn.com/dms/image/v2/D5603AQES3LeckCZRSw/profile-displayphoto-crop_800_800/B56Zi4dafXG4AI-/0/1755441394121?e=1780531200&v=beta&t=Nr-RHzqVXvvoR1-XFpnZnhMq1mo9bqZhT_EtUNmURIo" 
                 alt="Malindu Yasanjith"
                 className="w-full h-full object-cover rounded-[32px]"
               />
