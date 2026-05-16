@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { Send, Phone, MapPin, Mail, Github, Linkedin } from 'lucide-react';
+import { Send, Phone, MapPin, Mail, Github, Linkedin, CheckCircle, AlertCircle } from 'lucide-react';
 import { useState } from 'react';
 import emailjs from '@emailjs/browser';
 
@@ -7,42 +7,55 @@ export default function ContactSection() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    message: '',
+    message: ''
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState({ type: '', message: '' });
+  const [isLoading, setIsLoading] = useState(false);
+  const [status, setStatus] = useState({ type: '', message: '' }); // 'success', 'error', ''
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    // Clear status when user starts typing again
+    if (status.message) setStatus({ type: '', message: '' });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSubmitting(true);
-    setSubmitStatus({ type: '', message: '' });
+    
+    // Basic validation
+    if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) {
+      setStatus({ type: 'error', message: 'Please fill in all fields.' });
+      return;
+    }
+    if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      setStatus({ type: 'error', message: 'Please enter a valid email address.' });
+      return;
+    }
 
-    // EmailJS configuration
-    // You need to replace these with your own credentials from https://www.emailjs.com/
-    const serviceId = 'YOUR_SERVICE_ID';     // e.g., 'service_abc123'
-    const templateId = 'YOUR_TEMPLATE_ID';   // e.g., 'template_xyz789'
-    const publicKey = 'YOUR_PUBLIC_KEY';     // e.g., 'user_abc123'
+    setIsLoading(true);
+    setStatus({ type: '', message: '' });
 
-    const templateParams = {
-      from_name: formData.name,
-      from_email: formData.email,
-      message: formData.message,
-      to_email: 'yasanjithmalindu@gmail.com',
-    };
+    // EmailJS configuration - REPLACE WITH YOUR OWN KEYS
+    const serviceID = 'service_xylp3qt';      // e.g., 'service_xxxxx'
+    const templateID = 'YOUR_TEMPLATE_ID';    // e.g., 'template_xxxxx'
+    const publicKey = 'YOUR_PUBLIC_KEY';      // from EmailJS dashboard
 
     try {
-      await emailjs.send(serviceId, templateId, templateParams, publicKey);
-      setSubmitStatus({ type: 'success', message: 'Message sent successfully! I will get back to you soon.' });
+      const templateParams = {
+        from_name: formData.name,
+        from_email: formData.email,
+        message: formData.message,
+        to_email: 'yasanjithmalindu@gmail.com'
+      };
+
+      await emailjs.send(serviceID, templateID, templateParams, publicKey);
+      
+      setStatus({ type: 'success', message: 'Message sent successfully! I\'ll get back to you soon.' });
       setFormData({ name: '', email: '', message: '' }); // reset form
     } catch (error) {
       console.error('EmailJS error:', error);
-      setSubmitStatus({ type: 'error', message: 'Failed to send message. Please try again later or email me directly.' });
+      setStatus({ type: 'error', message: 'Something went wrong. Please try again later.' });
     } finally {
-      setIsSubmitting(false);
+      setIsLoading(false);
     }
   };
 
@@ -145,10 +158,10 @@ export default function ContactSection() {
             transition={{ delay: 0.6 }}
             className="flex gap-4 mt-8 sm:mt-10 print:hidden justify-center lg:justify-start"
           >
-            <a href="https://github.com/malinduyasanjith8090" target="_blank" rel="noopener noreferrer" className="w-8 h-8 sm:w-10 sm:h-10 rounded-full glass flex items-center justify-center text-slate-600 hover:text-brand-blue hover:-translate-y-1 transition-all">
+            <a href="https://github.com/malinduyasanjith8090" target="_blank" rel="noreferrer" className="w-8 h-8 sm:w-10 sm:h-10 rounded-full glass flex items-center justify-center text-slate-600 hover:text-brand-blue hover:-translate-y-1 transition-all">
               <Github size={14} className="sm:w-[18px] sm:h-[18px]" />
             </a>
-            <a href="#" target="_blank" rel="noopener noreferrer" className="w-8 h-8 sm:w-10 sm:h-10 rounded-full glass flex items-center justify-center text-slate-600 hover:text-brand-blue hover:-translate-y-1 transition-all">
+            <a href="#" target="_blank" rel="noreferrer" className="w-8 h-8 sm:w-10 sm:h-10 rounded-full glass flex items-center justify-center text-slate-600 hover:text-brand-blue hover:-translate-y-1 transition-all">
               <Linkedin size={14} className="sm:w-[18px] sm:h-[18px]" />
             </a>
           </motion.div>
@@ -170,9 +183,9 @@ export default function ContactSection() {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                required
                 placeholder="John Doe" 
                 className="w-full px-4 sm:px-5 py-3 sm:py-4 rounded-xl sm:rounded-2xl bg-white/50 border border-white focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 outline-none transition-all shadow-sm font-medium text-sm sm:text-base placeholder:text-slate-400"
+                disabled={isLoading}
               />
             </div>
             
@@ -183,9 +196,9 @@ export default function ContactSection() {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                required
                 placeholder="john@example.com" 
                 className="w-full px-4 sm:px-5 py-3 sm:py-4 rounded-xl sm:rounded-2xl bg-white/50 border border-white focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 outline-none transition-all shadow-sm font-medium text-sm sm:text-base placeholder:text-slate-400"
+                disabled={isLoading}
               />
             </div>
 
@@ -195,26 +208,30 @@ export default function ContactSection() {
                 name="message"
                 value={formData.message}
                 onChange={handleChange}
-                required
                 placeholder="Tell me about your project..." 
                 rows={4}
                 className="w-full px-4 sm:px-5 py-3 sm:py-4 rounded-xl sm:rounded-2xl bg-white/50 border border-white focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 outline-none transition-all shadow-sm font-medium text-sm sm:text-base resize-none placeholder:text-slate-400"
+                disabled={isLoading}
               ></textarea>
             </div>
 
-            {submitStatus.message && (
-              <div className={`text-sm text-center p-2 rounded-lg ${submitStatus.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                {submitStatus.message}
+            {/* Status Message */}
+            {status.message && (
+              <div className={`flex items-center gap-2 text-sm p-3 rounded-xl ${
+                status.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
+              }`}>
+                {status.type === 'success' ? <CheckCircle size={16} /> : <AlertCircle size={16} />}
+                <span>{status.message}</span>
               </div>
             )}
 
             <button 
-              type="submit" 
-              disabled={isSubmitting}
+              type="submit"
+              disabled={isLoading}
               className="w-full mt-2 bg-slate-900 hover:bg-slate-800 text-white font-medium py-3 sm:py-4 rounded-xl sm:rounded-2xl flex items-center justify-center gap-2 transition-colors shadow-lg shadow-brand-blue/10 text-sm sm:text-base disabled:opacity-70 disabled:cursor-not-allowed"
             >
-              {isSubmitting ? (
-                <>Sending... <Send size={14} className="sm:w-[18px] sm:h-[18px] animate-pulse" /></>
+              {isLoading ? (
+                <>Sending <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div></>
               ) : (
                 <>Send Message <Send size={14} className="sm:w-[18px] sm:h-[18px]" /></>
               )}

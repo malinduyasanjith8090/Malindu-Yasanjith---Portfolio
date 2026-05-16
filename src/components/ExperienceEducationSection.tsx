@@ -44,30 +44,30 @@ export default function ExperienceEducationSection() {
       whileInView={{ opacity: 1, x: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.6, delay }}
-      className="relative pl-8 pb-8 group"
+      className="relative pl-5 sm:pl-7 md:pl-8 pb-6 sm:pb-8 group"
     >
       {/* Timeline Line */}
       <div className="absolute left-0 top-0 bottom-0 w-px bg-slate-200 group-last:bottom-auto group-last:h-full"></div>
       
       {/* Timeline Dot */}
-      <div className={`absolute left-[-5px] top-2 w-[11px] h-[11px] rounded-full ring-4 ring-brand-bg ${isEdu ? 'bg-brand-lavender' : 'bg-brand-blue'}`}></div>
+      <div className={`absolute left-[-5px] top-2 w-[9px] sm:w-[10px] md:w-[11px] h-[9px] sm:h-[10px] md:h-[11px] rounded-full ring-2 sm:ring-4 ring-white ${isEdu ? 'bg-brand-lavender' : 'bg-brand-blue'}`}></div>
       
-      <div className="glass-card p-5 rounded-2xl hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-        <h4 className="text-lg font-display font-semibold text-slate-800 mb-1">
+      <div className="glass-card p-4 sm:p-5 rounded-xl sm:rounded-2xl hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+        <h4 className="text-base sm:text-lg font-display font-semibold text-slate-800 mb-1">
           {isEdu ? item.degree : item.role}
         </h4>
-        <div className="flex items-center gap-4 text-sm text-slate-500 mb-3 font-medium">
-          <span className="flex items-center gap-1"><MapPin size={14}/> {isEdu ? item.institution : item.company}</span>
-          <span className="flex items-center gap-1"><Calendar size={14}/> {item.period}</span>
+        <div className="flex flex-wrap items-center gap-x-3 sm:gap-x-4 gap-y-1 text-xs sm:text-sm text-slate-500 mb-2 sm:mb-3 font-medium">
+          <span className="flex items-center gap-1"><MapPin size={12} className="sm:w-[14px] sm:h-[14px]"/> {isEdu ? item.institution : item.company}</span>
+          <span className="flex items-center gap-1"><Calendar size={12} className="sm:w-[14px] sm:h-[14px]"/> {item.period}</span>
         </div>
-        <p className="text-slate-600 text-sm leading-relaxed">{item.desc}</p>
+        <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">{item.desc}</p>
       </div>
     </motion.div>
   );
 
   return (
-    <section className="h-screen w-full flex flex-col items-center justify-center p-8 md:p-16 lg:p-24 snap-start relative z-10">
-      <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-2 gap-16">
+    <section className="w-full min-h-screen flex flex-col items-center justify-center py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 lg:px-16 xl:px-24 snap-start relative z-10">
+      <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-16">
         
         {/* Experience Column */}
         <div className="flex flex-col">
@@ -75,15 +75,15 @@ export default function ExperienceEducationSection() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="flex items-center gap-3 mb-10"
+            className="flex items-center gap-3 mb-6 sm:mb-8 md:mb-10"
           >
-            <div className="p-3 bg-brand-blue/10 rounded-xl text-brand-blue">
-              <Briefcase size={24} />
+            <div className="p-2 sm:p-3 bg-brand-blue/10 rounded-xl text-brand-blue">
+              <Briefcase size={20} className="sm:w-6 sm:h-6" />
             </div>
-            <h2 className="text-3xl font-display font-bold text-slate-900">Experience</h2>
+            <h2 className="text-2xl sm:text-3xl font-display font-bold text-slate-900">Experience</h2>
           </motion.div>
           
-          <div className="flex flex-col ml-3">
+          <div className="flex flex-col ml-2 sm:ml-3">
             {experiences.map((exp, idx) => (
               <ItemCard key={idx} item={exp} delay={idx * 0.1} />
             ))}
@@ -96,15 +96,15 @@ export default function ExperienceEducationSection() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="flex items-center gap-3 mb-10"
+            className="flex items-center gap-3 mb-6 sm:mb-8 md:mb-10"
           >
-            <div className="p-3 bg-brand-lavender/10 rounded-xl text-brand-lavender">
-              <GraduationCap size={24} />
+            <div className="p-2 sm:p-3 bg-brand-lavender/10 rounded-xl text-brand-lavender">
+              <GraduationCap size={20} className="sm:w-6 sm:h-6" />
             </div>
-            <h2 className="text-3xl font-display font-bold text-slate-900">Education</h2>
+            <h2 className="text-2xl sm:text-3xl font-display font-bold text-slate-900">Education</h2>
           </motion.div>
           
-          <div className="flex flex-col ml-3">
+          <div className="flex flex-col ml-2 sm:ml-3">
             {education.map((edu, idx) => (
               <ItemCard key={idx} item={edu} isEdu={true} delay={0.2 + (idx * 0.1)} />
             ))}
