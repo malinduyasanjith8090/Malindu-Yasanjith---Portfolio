@@ -1,10 +1,7 @@
 import { motion } from 'motion/react';
 import { ArrowRight, Mail } from 'lucide-react';
-import { useState, useEffect } from 'react';
 
 export default function HeroSection() {
-  const [imageError, setImageError] = useState(false);
-  
   const scrollToProjects = () => {
     const projectsSection = document.getElementById('projects');
     if (projectsSection) {
@@ -19,22 +16,12 @@ export default function HeroSection() {
     }
   };
 
-  // List of possible image paths to try
-  const imagePaths = [
-    '/images/portfolio.jpeg',
-    '/images/portfolio.jpg',
-    '/portfolio.jpeg',
-    '/assets/portfolio.jpeg',
-    'https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=400&h=500&fit=crop'
-  ];
-
   return (
     <section className="min-h-screen w-full flex items-center justify-center px-5 py-16 sm:px-8 sm:py-20 md:px-12 md:py-24 lg:p-16 xl:p-24 snap-start relative">
       <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center">
         
         {/* Left Side: Content */}
         <div className="flex flex-col items-start z-10 text-center sm:text-left">
-          {/* ... rest of your left side content ... */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -94,7 +81,7 @@ export default function HeroSection() {
           </motion.div>
         </div>
 
-        {/* Right Side: Image Card with Badge */}
+        {/* Right Side: Image Card with Badge - hidden on mobile, visible from lg up */}
         <div className="relative h-[350px] sm:h-[400px] w-full hidden lg:flex items-center justify-center z-0">
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
@@ -102,19 +89,12 @@ export default function HeroSection() {
             transition={{ duration: 1.2, delay: 0.2, ease: "easeOut" }}
             className="relative w-[300px] md:w-[340px] h-[420px] md:h-[460px] rounded-[40px] glass-card overflow-visible p-2"
           >
-            <div className="relative w-full h-full rounded-[32px] overflow-hidden bg-gradient-to-br from-slate-200 to-slate-300 flex items-center justify-center">
+            <div className="relative w-full h-full rounded-[32px] overflow-hidden">
               <img 
-                src={imageError ? imagePaths[imagePaths.length-1] : imagePaths[0]}
+                src="../images/portfolio.jpeg" 
                 alt="Malindu Yasanjith"
                 className="w-full h-full object-cover rounded-[32px]"
-                onError={() => setImageError(true)}
               />
-              {/* Fallback initial if image fails, show initials or icon */}
-              {imageError && (
-                <div className="absolute inset-0 flex items-center justify-center bg-brand-blue/10">
-                  <span className="text-4xl font-bold text-slate-400">MY</span>
-                </div>
-              )}
               
               <motion.div
                 animate={{ y: [-5, 5, -5] }}
